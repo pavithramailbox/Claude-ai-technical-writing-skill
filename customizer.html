@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Technical Writing Skill Customizer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+<style>
+:root,[data-theme="light"]{
+  --color-bg:#f7f6f2;--color-surface:#f9f8f5;--color-surface-2:#fbfbf9;
+  --color-surface-offset:#f0ede8;--color-border:#d4d1ca;--color-divider:#e0ddd8;
+  --color-text:#28251d;--color-text-muted:#7a7974;--color-text-faint:#bab9b4;
+  --color-primary:#01696f;--color-primary-hover:#0c4e54;--color-primary-highlight:#cedcd8;
+  --color-success:#437a22;--color-error:#a12c7b;
+  --font-body:'Inter',system-ui,sans-serif;
+  --font-display:'Instrument Serif',Georgia,serif;
+  --radius-sm:0.375rem;--radius-md:0.5rem;--radius-lg:0.75rem;--radius-xl:1rem;
+  --shadow-sm:0 1px 3px oklch(0.2 0.01 80/0.08);
+  --shadow-md:0 4px 16px oklch(0.2 0.01 80/0.10);
+  --shadow-lg:0 12px 40px oklch(0.2 0.01 80/0.14);
+  --transition:180ms cubic-bezier(0.16,1,0.3,1);
+  --space-1:0.25rem;--space-2:0.5rem;--space-3:0.75rem;--space-4:1rem;
+  --space-5:1.25rem;--space-6:1.5rem;--space-8:2rem;--space-10:2.5rem;
+  --space-12:3rem;--space-16:4rem;
+  --text-xs:clamp(0.75rem,0.7rem+0.25vw,0.875rem);
+  --text-sm:clamp(0.875rem,0.8rem+0.35vw,1rem);
+  --text-base:clamp(1rem,0.95rem+0.25vw,1.125rem);
+  --text-lg:clamp(1.125rem,1rem+0.75vw,1.5rem);
+  --text-xl:clamp(1.5rem,1.2rem+1.25vw,2.25rem);
+  --text-2xl:clamp(2rem,1.2rem+2.5vw,3rem);
+}
+[data-theme="dark"]{
+  --color-bg:#171614;--color-surface:#1c1b19;--color-surface-2:#201f1d;
+  --color-surface-offset:#1d1c1a;--color-border:#393836;--color-divider:#262523;
+  --color-text:#cdccca;--color-text-muted:#797876;--color-text-faint:#5a5957;
+  --color-primary:#4f98a3;--color-primary-hover:#227f8b;--color-primary-highlight:#313b3b;
+  --color-success:#6daa45;--color-error:#d163a7;
+  --shadow-sm:0 1px 3px oklch(0 0 0/0.25);
+  --shadow-md:0 4px 16px oklch(0 0 0/0.35);
+  --shadow-lg:0 12px 40px oklch(0 0 0/0.45);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{-webkit-font-smoothing:antialiased;scroll-behavior:smooth;scroll-padding-top:var(--space-16);}
+body{font-family:var(--font-body);font-size:var(--text-base);color:var(--color-text);background:var(--color-bg);min-height:100dvh;line-height:1.6;}
+img,svg{display:block;max-width:100%;}
+button{cursor:pointer;background:none;border:none;font:inherit;color:inherit;}
+a,button,[role="button"],input,textarea,select{
+  transition:color var(--transition),background var(--transition),
+             border-color var(--transition),box-shadow var(--transition),opacity var(--transition);
+}
+:focus-visible{outline:2px solid var(--color-primary);outline-offset:3px;border-radius:var(--radius-sm);}
+
+/* ── Layout ── */
+.app-header{
+  position:sticky;top:0;z-index:100;
+  background:var(--color-surface);
+  border-bottom:1px solid var(--color-divider);
+  padding:var(--space-4) var(--space-6);
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:var(--shadow-sm);
+}
+.logo{display:flex;align-items:center;gap:var(--space-3);}
+.logo-icon{width:32px;height:32px;color:var(--color-primary);}
+.logo-text{font-family:var(--font-display);font-size:var(--text-lg);color:var(--color-text);}
+.logo-text span{color:var(--color-primary);}
+.theme-btn{
+  width:36px;height:36px;border-radius:var(--radius-md);
+  display:flex;align-items:center;justify-content:center;
+  color:var(--color-text-muted);
+}
+.theme-btn:hover{background:var(--color-surface-offset);color:var(--color-text);}
+
+.main{max-width:860px;margin:0 auto;padding:var(--space-12) var(--space-6);}
+
+/* ── Progress stepper ── */
+.stepper{
+  display:flex;align-items:center;gap:0;
+  margin-bottom:var(--space-10);
+  overflow-x:auto;padding-bottom:var(--space-2);
+}
+.step{
+  display:flex;align-items:center;gap:var(--space-2);
+  flex-shrink:0;
+}
+.step-num{
+  width:28px;height:28px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:var(--text-xs);font-weight:600;
+  background:var(--color-surface-offset);
+  color:var(--color-text-muted);
+  border:2px solid var(--color-border);
+  transition:all var(--transition);
+}
+.step.active .step-num{background:var(--color-primary);color:#fff;border-color:var(--color-primary);}
+.step.done .step-num{background:var(--color-success);color:#fff;border-color:var(--color-success);}
+.step-label{font-size:var(--text-xs);color:var(--color-text-muted);white-space:nowrap;}
+.step.active .step-label{color:var(--color-text);font-weight:500;}
+.step-connector{
+  flex:1;height:2px;min-width:20px;
+  background:var(--color-divider);
+  margin:0 var(--space-2);
+}
+.step-connector.done{background:var(--color-success);}
+
+/* ── Cards / sections ── */
+.card{
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-xl);
+  padding:var(--space-8);
+  box-shadow:var(--shadow-sm);
+  margin-bottom:var(--space-8);
+}
+.card-title{
+  font-family:var(--font-display);
+  font-size:var(--text-xl);
+  margin-bottom:var(--space-2);
+  line-height:1.2;
+}
+.card-subtitle{
+  color:var(--color-text-muted);
+  font-size:var(--text-sm);
+  margin-bottom:var(--space-8);
+  max-width:62ch;
+}
+
+/* ── Form elements ── */
+.field{margin-bottom:var(--space-6);}
+.field-label{
+  display:block;
+  font-size:var(--text-sm);font-weight:500;
+  margin-bottom:var(--space-2);
+  color:var(--color-text);
+}
+.field-hint{
+  font-size:var(--text-xs);color:var(--color-text-muted);
+  margin-bottom:var(--space-2);
+}
+.field input,.field select,.field textarea{
+  width:100%;
+  padding:var(--space-3) var(--space-4);
+  background:var(--color-bg);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-md);
+  font-size:var(--text-sm);
+  color:var(--color-text);
+  line-height:1.5;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
+  outline:none;
+  border-color:var(--color-primary);
+  box-shadow:0 0 0 3px oklch(from var(--color-primary) l c h / 0.15);
+}
+.field textarea{resize:vertical;min-height:80px;}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237a7974' d='M6 8L1 3h10z'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px;}
+
+/* ── Choice chips ── */
+.chips{display:flex;flex-wrap:wrap;gap:var(--space-2);margin-top:var(--space-2);}
+.chip{
+  padding:var(--space-2) var(--space-4);
+  border:1.5px solid var(--color-border);
+  border-radius:var(--radius-full);
+  font-size:var(--text-xs);
+  cursor:pointer;
+  background:var(--color-bg);
+  color:var(--color-text-muted);
+  user-select:none;
+}
+.chip:hover{border-color:var(--color-primary);color:var(--color-primary);}
+.chip.selected{
+  border-color:var(--color-primary);
+  background:var(--color-primary-highlight);
+  color:var(--color-primary);
+  font-weight:500;
+}
+
+/* ── Term table ── */
+.term-row{
+  display:grid;grid-template-columns:1fr 1fr auto;
+  gap:var(--space-3);align-items:center;
+  padding:var(--space-3) 0;
+  border-bottom:1px solid var(--color-divider);
+}
+.term-row:last-child{border-bottom:none;}
+.term-row label{font-size:var(--text-xs);color:var(--color-text-muted);}
+.term-row input{
+  padding:var(--space-2) var(--space-3);
+  font-size:var(--text-xs);
+  background:var(--color-bg);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-sm);
+  color:var(--color-text);
+  width:100%;
+}
+.term-row input:focus{outline:none;border-color:var(--color-primary);}
+.remove-btn{
+  width:28px;height:28px;
+  display:flex;align-items:center;justify-content:center;
+  border-radius:var(--radius-sm);
+  color:var(--color-text-faint);
+  font-size:1rem;
+}
+.remove-btn:hover{color:var(--color-error);background:oklch(from var(--color-error) l c h / 0.08);}
+.add-term-btn{
+  margin-top:var(--space-3);
+  font-size:var(--text-xs);
+  color:var(--color-primary);
+  padding:var(--space-2) var(--space-3);
+  border:1.5px dashed var(--color-primary-highlight);
+  border-radius:var(--radius-md);
+  width:100%;
+  text-align:center;
+}
+.add-term-btn:hover{background:var(--color-primary-highlight);}
+
+/* ── Buttons ── */
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2);
+  padding:var(--space-3) var(--space-6);
+  border-radius:var(--radius-md);
+  font-size:var(--text-sm);font-weight:500;
+  cursor:pointer;border:none;
+}
+.btn-primary{background:var(--color-primary);color:#fff;}
+.btn-primary:hover{background:var(--color-primary-hover);}
+.btn-ghost{
+  background:transparent;
+  border:1.5px solid var(--color-border);
+  color:var(--color-text-muted);
+}
+.btn-ghost:hover{border-color:var(--color-primary);color:var(--color-primary);}
+.btn-actions{display:flex;gap:var(--space-3);justify-content:flex-end;margin-top:var(--space-8);}
+
+/* ── Code preview ── */
+.preview-wrap{
+  background:var(--color-surface-2);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  overflow:hidden;
+  margin-top:var(--space-6);
+}
+.preview-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:var(--space-3) var(--space-4);
+  border-bottom:1px solid var(--color-divider);
+  background:var(--color-surface-offset);
+}
+.preview-bar span{font-size:var(--text-xs);color:var(--color-text-muted);font-family:monospace;}
+.copy-btn{
+  font-size:var(--text-xs);
+  color:var(--color-primary);
+  padding:var(--space-1) var(--space-3);
+  border:1px solid var(--color-primary-highlight);
+  border-radius:var(--radius-sm);
+  background:var(--color-primary-highlight);
+}
+.copy-btn:hover{background:var(--color-primary);color:#fff;border-color:var(--color-primary);}
+.copy-btn.copied{background:var(--color-success);color:#fff;border-color:var(--color-success);}
+pre{
+  padding:var(--space-6);
+  overflow-x:auto;
+  font-size:0.72rem;
+  line-height:1.7;
+  font-family:'Courier New',monospace;
+  color:var(--color-text);
+  max-height:480px;
+  white-space:pre-wrap;
+  word-break:break-word;
+}
+
+/* ── Download section ── */
+.download-card{
+  background:linear-gradient(135deg,oklch(from var(--color-primary) l c h / 0.06),oklch(from var(--color-primary) l c h / 0.02));
+  border:1.5px solid var(--color-primary-highlight);
+  border-radius:var(--radius-xl);
+  padding:var(--space-8);
+  text-align:center;
+}
+.download-card h2{font-family:var(--font-display);font-size:var(--text-xl);margin-bottom:var(--space-2);}
+.download-card p{color:var(--color-text-muted);font-size:var(--text-sm);margin-bottom:var(--space-6);}
+.file-list{
+  display:flex;flex-wrap:wrap;gap:var(--space-3);
+  justify-content:center;margin-bottom:var(--space-6);
+}
+.file-chip{
+  display:inline-flex;align-items:center;gap:var(--space-2);
+  padding:var(--space-2) var(--space-4);
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-full);
+  font-size:var(--text-xs);
+  color:var(--color-text-muted);
+}
+
+/* ── Section divider ── */
+.section-divider{
+  display:flex;align-items:center;gap:var(--space-4);
+  margin:var(--space-8) 0;
+}
+.section-divider::before,.section-divider::after{
+  content:'';flex:1;height:1px;background:var(--color-divider);
+}
+.section-divider span{
+  font-size:var(--text-xs);color:var(--color-text-faint);white-space:nowrap;text-transform:uppercase;letter-spacing:0.08em;
+}
+
+/* ── Inline toggle ── */
+.toggle-field{display:flex;align-items:center;gap:var(--space-3);margin-bottom:var(--space-4);}
+.toggle{position:relative;display:inline-block;width:40px;height:22px;flex-shrink:0;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{
+  position:absolute;inset:0;
+  background:var(--color-border);border-radius:var(--radius-full);cursor:pointer;
+  transition:background var(--transition);
+}
+.toggle-slider::before{
+  content:'';position:absolute;
+  width:16px;height:16px;left:3px;bottom:3px;
+  background:#fff;border-radius:50%;
+  transition:transform var(--transition);
+}
+.toggle input:checked+.toggle-slider{background:var(--color-primary);}
+.toggle input:checked+.toggle-slider::before{transform:translateX(18px);}
+.toggle-label{font-size:var(--text-sm);color:var(--color-text);}
+
+/* ── Page visibility ── */
+.page{display:none;}
+.page.active{display:block;}
+.page{animation:fadeUp 0.25s ease;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── Welcome hero ── */
+.hero{text-align:center;padding:var(--space-12) 0 var(--space-10);}
+.hero-icon{
+  width:64px;height:64px;
+  background:var(--color-primary-highlight);
+  border-radius:var(--radius-xl);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto var(--space-6);
+  color:var(--color-primary);
+}
+.hero-title{
+  font-family:var(--font-display);
+  font-size:var(--text-2xl);
+  margin-bottom:var(--space-3);
+  line-height:1.15;
+}
+.hero-sub{
+  font-size:var(--text-base);
+  color:var(--color-text-muted);
+  max-width:52ch;margin:0 auto var(--space-8);
+}
+.steps-preview{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:var(--space-4);margin-bottom:var(--space-8);text-align:left;
+}
+.step-preview-card{
+  background:var(--color-surface);
+  border:1px solid var(--color-border);
+  border-radius:var(--radius-lg);
+  padding:var(--space-4);
+}
+.step-preview-card .num{
+  font-size:var(--text-xs);font-weight:700;
+  color:var(--color-primary);
+  margin-bottom:var(--space-2);
+  letter-spacing:0.05em;
+}
+.step-preview-card .lbl{font-size:var(--text-sm);font-weight:500;}
+.step-preview-card .desc{font-size:var(--text-xs);color:var(--color-text-muted);margin-top:var(--space-1);}
+
+@media(max-width:600px){
+  .main{padding:var(--space-8) var(--space-4);}
+  .card{padding:var(--space-6);}
+  .term-row{grid-template-columns:1fr 1fr auto;}
+  .btn-actions{flex-direction:column;}
+  .btn{width:100%;justify-content:center;}
+}
+</style>
+</head>
+<body>
+
+<header class="app-header">
+  <div class="logo">
+    <svg class="logo-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-label="Tech Writing Skill logo">
+      <rect width="32" height="32" rx="8" fill="currentColor" opacity="0.12"/>
+      <path d="M8 10h16M8 16h10M8 22h13" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="24" cy="22" r="3" fill="currentColor"/>
+      <path d="M22.5 22l1 1 2-2" stroke="#fff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    <span class="logo-text">Tech Writing <span>Skill</span> Customizer</span>
+  </div>
+  <button class="theme-btn" data-theme-toggle aria-label="Switch to dark mode">
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+  </button>
+</header>
+
+<main class="main">
+
+  <!-- ── WELCOME PAGE ── -->
+  <div class="page active" id="page-welcome">
+    <div class="hero">
+      <div class="hero-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+      </div>
+      <h1 class="hero-title">Build Your Technical Writing Skill</h1>
+      <p class="hero-sub">Answer a few questions to generate a custom Claude skill file configured for your company, style guide, and documentation stack.</p>
+      <div class="steps-preview">
+        <div class="step-preview-card"><div class="num">01</div><div class="lbl">Company Profile</div><div class="desc">Name, product, style guide</div></div>
+        <div class="step-preview-card"><div class="num">02</div><div class="lbl">Doc Stack</div><div class="desc">SSG, file paths, UI config</div></div>
+        <div class="step-preview-card"><div class="num">03</div><div class="lbl">Style Preferences</div><div class="desc">Voice, terms, admonitions</div></div>
+        <div class="step-preview-card"><div class="num">04</div><div class="lbl">Workflows</div><div class="desc">Enable the workflows you need</div></div>
+        <div class="step-preview-card"><div class="num">05</div><div class="lbl">Download</div><div class="desc">Get your ready-to-use skill files</div></div>
+      </div>
+      <button class="btn btn-primary" onclick="goTo(1)">Get Started →</button>
+    </div>
+  </div>
+
+  <!-- ── STEP PAGES ── -->
+  <div class="page" id="page-1">
+    <div id="stepper-1"></div>
+    <div class="card">
+      <h2 class="card-title">Company &amp; Product</h2>
+      <p class="card-subtitle">Tell us about your organization so the skill can reference your brand correctly.</p>
+      <div class="field">
+        <label class="field-label" for="company-name">Company name</label>
+        <div class="field-hint">Used in brand compliance checks and response formatting.</div>
+        <input type="text" id="company-name" placeholder="e.g. Acme Corporation">
+      </div>
+      <div class="field">
+        <label class="field-label" for="product-name">Product or platform name</label>
+        <div class="field-hint">The primary product users are documenting.</div>
+        <input type="text" id="product-name" placeholder="e.g. Acme DataHub">
+      </div>
+      <div class="field">
+        <label class="field-label" for="support-label">Customer support reference label</label>
+        <div class="field-hint">How writers should refer to support in docs (e.g. "Acme Support").</div>
+        <input type="text" id="support-label" placeholder="e.g. Acme Support">
+      </div>
+      <div class="field">
+        <label class="field-label">Primary style guide</label>
+        <div class="field-hint">The authoritative style reference for this team.</div>
+        <div class="chips" id="styleguide-chips">
+          <span class="chip selected" data-value="Microsoft Manual of Style (4th Edition)">Microsoft MoS</span>
+          <span class="chip" data-value="Google Developer Documentation Style Guide">Google Dev Style</span>
+          <span class="chip" data-value="Apple Style Guide">Apple Style Guide</span>
+          <span class="chip" data-value="The Chicago Manual of Style">Chicago Manual</span>
+          <span class="chip" data-value="custom">Custom / Other</span>
+        </div>
+      </div>
+      <div class="field" id="custom-guide-field" style="display:none;">
+        <label class="field-label" for="custom-guide">Custom style guide name</label>
+        <input type="text" id="custom-guide" placeholder="e.g. Acme TechPubs Style Guide v3">
+      </div>
+      <div class="btn-actions">
+        <button class="btn btn-ghost" onclick="goTo(0)">← Back</button>
+        <button class="btn btn-primary" onclick="goTo(2)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-2">
+    <div id="stepper-2"></div>
+    <div class="card">
+      <h2 class="card-title">Documentation Stack</h2>
+      <p class="card-subtitle">Configure the technical environment your team writes in.</p>
+      <div class="field">
+        <label class="field-label" for="doc-root">Documentation root path</label>
+        <div class="field-hint">Top-level directory where user guide Markdown content lives.</div>
+        <input type="text" id="doc-root" placeholder="e.g. docs/user-guide/">
+      </div>
+      <div class="field">
+        <label class="field-label">Static site generator</label>
+        <div class="chips" id="ssg-chips">
+          <span class="chip selected" data-value="Hugo">Hugo</span>
+          <span class="chip" data-value="MkDocs">MkDocs</span>
+          <span class="chip" data-value="Docusaurus">Docusaurus</span>
+          <span class="chip" data-value="Gatsby">Gatsby</span>
+          <span class="chip" data-value="Jekyll">Jekyll</span>
+          <span class="chip" data-value="Other / unknown">Other</span>
+        </div>
+      </div>
+      <div class="field">
+        <label class="field-label" for="ui-config-path">UI configuration file path</label>
+        <div class="field-hint">Path to the file defining navigation labels and menu items (used for stale UI label checks).</div>
+        <input type="text" id="ui-config-path" placeholder="e.g. src/app/navigation.config.ts">
+      </div>
+      <div class="field">
+        <label class="field-label" for="lint-cmd">Lint / validation command</label>
+        <div class="field-hint">The CLI command to run documentation linting (leave blank if not applicable).</div>
+        <input type="text" id="lint-cmd" placeholder="e.g. npm run docs:lint  or  nx lint content-guide">
+      </div>
+      <div class="btn-actions">
+        <button class="btn btn-ghost" onclick="goTo(1)">← Back</button>
+        <button class="btn btn-primary" onclick="goTo(3)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-3">
+    <div id="stepper-3"></div>
+    <div class="card">
+      <h2 class="card-title">Style Preferences</h2>
+      <p class="card-subtitle">Customize writing voice and company-specific terminology.</p>
+
+      <div class="field">
+        <label class="field-label">Documentation voice</label>
+        <div class="chips" id="voice-chips">
+          <span class="chip selected" data-value="second-person imperative (you / click Save)">Second person ("you")</span>
+          <span class="chip" data-value="third-person (the user / users click Save)">Third person ("the user")</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Heading capitalization</label>
+        <div class="chips" id="heading-chips">
+          <span class="chip selected" data-value="Title Case">Title Case</span>
+          <span class="chip" data-value="Sentence case">Sentence case</span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label class="field-label">Admonition syntax</label>
+        <div class="chips" id="admon-chips">
+          <span class="chip selected" data-value='{{< admonition type="note" title="Note" >}} ... {{< /admonition >}}'>Hugo shortcode</span>
+          <span class="chip" data-value="!!! note ...">MkDocs</span>
+          <span class="chip" data-value=":::note ... :::">Docusaurus</span>
+          <span class="chip" data-value="Custom / define below">Custom</span>
+        </div>
+      </div>
+      <div class="field" id="custom-admon-field" style="display:none;">
+        <label class="field-label" for="custom-admon">Custom admonition syntax (note example)</label>
+        <input type="text" id="custom-admon" placeholder='e.g. <div class="note"> ... </div>'>
+      </div>
+
+      <div class="section-divider"><span>Company-specific term substitutions</span></div>
+      <p class="field-hint" style="margin-bottom:var(--space-4);">Map terms the style guide flags to the preferred alternatives used at your company. These appear in the Preferred Terms table in the skill.</p>
+
+      <div id="terms-table">
+        <div class="term-row" style="font-weight:600;font-size:var(--text-xs);color:var(--color-text-muted);padding-bottom:var(--space-2);">
+          <span>Avoid</span><span>Use Instead</span><span></span>
+        </div>
+        <!-- Default rows populated by JS -->
+      </div>
+      <button class="add-term-btn" onclick="addTermRow()">+ Add term substitution</button>
+
+      <div class="btn-actions">
+        <button class="btn btn-ghost" onclick="goTo(2)">← Back</button>
+        <button class="btn btn-primary" onclick="goTo(4)">Next →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-4">
+    <div id="stepper-4"></div>
+    <div class="card">
+      <h2 class="card-title">Enable Workflows</h2>
+      <p class="card-subtitle">Choose which workflows to include in your skill file. You can always add more later.</p>
+      <div id="workflow-toggles"></div>
+      <div class="btn-actions">
+        <button class="btn btn-ghost" onclick="goTo(3)">← Back</button>
+        <button class="btn btn-primary" onclick="buildAndGoTo5()">Generate Skill →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="page" id="page-5">
+    <div id="stepper-5"></div>
+    <div class="download-card" style="margin-bottom:var(--space-8);">
+      <h2>Your Skill Is Ready</h2>
+      <p>All files are configured for your team. Click a file to download it, or download everything at once.</p>
+      <div class="file-list">
+        <span class="file-chip">📄 SKILL.md</span>
+        <span class="file-chip">📄 reference/style-rules.md</span>
+        <span class="file-chip">📄 reference/ui-terms.md</span>
+        <span class="file-chip">📄 reference/syntax.md</span>
+        <span class="file-chip">📄 reference/weights.md</span>
+        <span class="file-chip">📄 workflows/validate.md</span>
+      </div>
+      <div style="display:flex;gap:var(--space-3);justify-content:center;flex-wrap:wrap;">
+        <button class="btn btn-primary" onclick="downloadAll()">⬇ Download All Files</button>
+        <button class="btn btn-ghost" onclick="goTo(1)">← Start Over</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:var(--space-4);">
+        <h3 style="font-size:var(--text-base);font-weight:600;">Preview: SKILL.md</h3>
+        <button class="copy-btn" id="copy-skill-btn" onclick="copySkill()">Copy</button>
+      </div>
+      <div class="preview-wrap">
+        <div class="preview-bar">
+          <span>SKILL.md</span>
+        </div>
+        <pre id="skill-preview">Generating...</pre>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<script>
+// ── State ──────────────────────────────────────────────────────────────────
+const state = {
+  companyName: '',
+  productName: '',
+  supportLabel: '',
+  styleGuide: 'Microsoft Manual of Style (4th Edition)',
+  customGuide: '',
+  docRoot: 'docs/user-guide/',
+  ssg: 'Hugo',
+  uiConfigPath: '',
+  lintCmd: '',
+  voice: 'second-person imperative (you / click Save)',
+  headingCase: 'Title Case',
+  admonStyle: '{{< admonition type="note" title="Note" >}} ... {{< /admonition >}}',
+  customAdmon: '',
+  terms: [
+    {avoid:'click on', use:'click'},
+    {avoid:'dropdown', use:'list'},
+    {avoid:'screenshot', use:'screen shot'},
+    {avoid:'log on', use:'sign in'},
+    {avoid:'utilize', use:'use'},
+  ],
+  workflows: {
+    A: {label:'Create New Page', enabled:true, desc:'Draft a new user guide topic from scratch, including placement and front matter.'},
+    B: {label:'Edit Existing Page', enabled:true, desc:'Modify specific sections of an existing doc with targeted validation.'},
+    C: {label:'Validate Documentation', enabled:true, desc:'Run a systematic style, link, and UI label quality check.'},
+    D: {label:'Feature Coverage Analysis', enabled:false, desc:'Map source code features to docs and identify coverage gaps or stale UI labels.'},
+    E: {label:'Code-to-Docs Impact', enabled:false, desc:'Detect code changes and flag documentation that may be out of date.'},
+  }
+};
+
+const STEPS = ['Welcome','Company','Doc Stack','Style','Workflows','Download'];
+let currentPage = 0;
+
+// ── Navigation ──────────────────────────────────────────────────────────────
+function goTo(n){
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  if(n===0){document.getElementById('page-welcome').classList.add('active');}
+  else{document.getElementById('page-'+n).classList.add('active');renderStepper(n);}
+  currentPage=n;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function buildAndGoTo5(){
+  collectAll();
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-5').classList.add('active');
+  renderStepper(5);
+  document.getElementById('skill-preview').textContent=buildSkillMd();
+  currentPage=5;
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ── Stepper ─────────────────────────────────────────────────────────────────
+function renderStepper(active){
+  const labels=['Company','Doc Stack','Style','Workflows','Download'];
+  const container=document.getElementById('stepper-'+active);
+  if(!container)return;
+  let html='<div class="stepper">';
+  labels.forEach((l,i)=>{
+    const n=i+1;
+    const cls=n<active?'done':n===active?'active':'';
+    const checkSvg=`<svg width="12" height="12" viewBox="0 0 12 12"><path d="M2 6l3 3 5-5" stroke="white" stroke-width="1.5" fill="none" stroke-linecap="round"/></svg>`;
+    html+=`<div class="step ${cls}"><div class="step-num">${cls==='done'?checkSvg:n}</div><span class="step-label">${l}</span></div>`;
+    if(i<labels.length-1){html+=`<div class="step-connector ${cls==='done'?'done':''}"></div>`;}
+  });
+  html+='</div>';
+  container.innerHTML=html;
+}
+
+// ── Chips ────────────────────────────────────────────────────────────────────
+document.addEventListener('click',e=>{
+  const chip=e.target.closest('.chip');
+  if(!chip)return;
+  const group=chip.closest('.chips');
+  if(!group)return;
+  group.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
+  chip.classList.add('selected');
+  const id=group.id;
+  const val=chip.dataset.value;
+  if(id==='styleguide-chips'){state.styleGuide=val;document.getElementById('custom-guide-field').style.display=val==='custom'?'block':'none';}
+  if(id==='ssg-chips')state.ssg=val;
+  if(id==='voice-chips')state.voice=val;
+  if(id==='heading-chips')state.headingCase=val;
+  if(id==='admon-chips'){state.admonStyle=val;document.getElementById('custom-admon-field').style.display=val==='Custom / define below'?'block':'none';}
+});
+
+// ── Term table ───────────────────────────────────────────────────────────────
+function renderTerms(){
+  const tbody=document.getElementById('terms-table');
+  const header=tbody.querySelector('.term-row:first-child');
+  Array.from(tbody.querySelectorAll('.term-row:not(:first-child)')).forEach(r=>r.remove());
+  state.terms.forEach((t,i)=>{
+    const row=document.createElement('div');row.className='term-row';
+    row.innerHTML=`<input type="text" value="${t.avoid}" placeholder="Avoid" oninput="state.terms[${i}].avoid=this.value">
+      <input type="text" value="${t.use}" placeholder="Use instead" oninput="state.terms[${i}].use=this.value">
+      <button class="remove-btn" onclick="removeTerm(${i})" title="Remove">×</button>`;
+    tbody.appendChild(row);
+  });
+}
+function addTermRow(){state.terms.push({avoid:'',use:''});renderTerms();}
+function removeTerm(i){state.terms.splice(i,1);renderTerms();}
+renderTerms();
+
+// ── Workflow toggles ─────────────────────────────────────────────────────────
+function renderWorkflows(){
+  const container=document.getElementById('workflow-toggles');
+  let html='';
+  Object.entries(state.workflows).forEach(([key,wf])=>{
+    html+=`<div class="toggle-field">
+      <label class="toggle"><input type="checkbox" ${wf.enabled?'checked':''} onchange="state.workflows['${key}'].enabled=this.checked">
+      <span class="toggle-slider"></span></label>
+      <div><div class="toggle-label"><strong>Workflow ${key}: ${wf.label}</strong></div>
+      <div style="font-size:var(--text-xs);color:var(--color-text-muted);">${wf.desc}</div></div></div>`;
+  });
+  container.innerHTML=html;
+}
+renderWorkflows();
+
+// ── Collect ──────────────────────────────────────────────────────────────────
+function collectAll(){
+  state.companyName=document.getElementById('company-name').value.trim()||'Your Company';
+  state.productName=document.getElementById('product-name').value.trim()||'Your Product';
+  state.supportLabel=document.getElementById('support-label').value.trim()||state.companyName+' Support';
+  state.customGuide=document.getElementById('custom-guide').value.trim();
+  state.docRoot=document.getElementById('doc-root').value.trim()||'docs/user-guide/';
+  state.uiConfigPath=document.getElementById('ui-config-path').value.trim()||'[ui-config-path]';
+  state.lintCmd=document.getElementById('lint-cmd').value.trim()||'[lint command]';
+  state.customAdmon=document.getElementById('custom-admon').value.trim();
+}
+
+const styleGuideRef=()=>{
+  const g=state.styleGuide==='custom'?(state.customGuide||'Your Style Guide'):state.styleGuide;
+  if(g.includes('Microsoft'))return{name:g,ch:'Ch.'};
+  if(g.includes('Google'))return{name:g,ch:'Section'};
+  return{name:g,ch:'§'};
+};
+
+// ── Build SKILL.md ───────────────────────────────────────────────────────────
+function buildSkillMd(){
+  const sg=styleGuideRef();
+  const sn=sg.name;
+  const co=state.companyName;
+  const prod=state.productName;
+  const supp=state.supportLabel;
+  const enabledWf=Object.entries(state.workflows).filter(([,w])=>w.enabled);
+  const wfTable=enabledWf.map(([k,w])=>`| ${w.label.padEnd(40)} | Workflow ${k} — see [workflows/${k.toLowerCase()}.md](workflows/${k.toLowerCase()}.md) |`).join('\n');
+
+  const admon=state.admonStyle==='Custom / define below'?(state.customAdmon||'[custom admonition syntax]'):state.admonStyle;
+  const termsTable=state.terms.filter(t=>t.avoid&&t.use).map(t=>`| ${t.avoid.padEnd(22)} | ${t.use.padEnd(28)} | ${sn} |`).join('\n');
+
+  return `---
+name: writing-technical-docs
+description: Applies ${sn} best practices to create, edit, validate, and audit ${prod} documentation. Use when the user wants to draft, review, or improve user guides, procedural docs, or feature documentation.
+---
+
+# Writing Technical Documentation — ${prod}
+
+Assists ${co} technical writers with creating, editing, and validating documentation using the **${sn}** as the authoritative style reference.
+
+## Session Setup
+
+Before starting any workflow, confirm these project variables (ask one at a time only if not already provided):
+
+1. **Doc root** — \`${state.docRoot}\`
+2. **Static site generator** — ${state.ssg}
+3. **UI config file** — \`${state.uiConfigPath}\`
+4. **Feature-to-doc map** — how source modules correspond to doc topics
+
+Store as session variables. Ask for missing values at the point they are first needed.
+
+## Workflows
+
+| User Wants To…                            | Workflow |
+| ----------------------------------------- | -------- |
+${wfTable}
+
+When the user's request is ambiguous, ask: "Are you looking to ${enabledWf.map(([k,w])=>w.label.toLowerCase()).join(', ')}?" Wait for the answer.
+
+## Core Principles
+
+1. **Report, don't enforce** — Present findings; let the user decide what to address
+2. **Ask before changing** — Always confirm before making edits
+3. **Cite the style guide** — Every finding references a ${sn} chapter or section
+4. **State gaps honestly** — Say when something couldn't be checked
+5. **Include line numbers** — Every finding includes line number and exact text
+6. **Ask, don't assume** — One clarifying question at a time; never bundle questions
+
+## Quick Reference
+
+- **Style rules**: See [reference/style-rules.md](reference/style-rules.md)
+- **UI verb and term tables**: See [reference/ui-terms.md](reference/ui-terms.md)
+- **Admonition and cross-reference syntax**: See [reference/syntax.md](reference/syntax.md)
+- **Topic weight categories**: See [reference/weights.md](reference/weights.md)
+
+## Brand and Trademark Rules
+
+- Apply trademark symbol on first mention per topic for registered product names
+- Always use "**${supp}**" (never abbreviate or omit the company name)
+- Never form possessives of trademarked names: "the architecture of ${prod}" not "${prod}'s architecture"
+- Never modify trademarked names with hyphens, abbreviations, or plurals
+
+## Company-Specific Preferred Terms
+
+| Avoid                  | Use Instead                  | Reference |
+| ---------------------- | ---------------------------- | --------- |
+${termsTable}
+
+For the full preferred terms list, see [reference/ui-terms.md](reference/ui-terms.md).
+
+## Response Format
+
+\`\`\`
+Quality Check: [filename]
+Applied: ${sn}
+
+Critical (1):
+  Line 45: [${sg.ch} 7 – Prohibited Terms] "whitelist" → "blocklist"
+
+Important (2):
+  Line 78: [${sg.ch} 1 – Active Voice] "is created by clicking" → "Create by clicking"
+  Line 102: [${sg.ch} 7 – Lists] Inconsistent list structure → Start all items with verbs
+
+How would you like to proceed?
+1. Fix all  2. Fix specific categories  3. Fix specific lines  4. Skip
+\`\`\`
+`;
+}
+
+// ── Copy / Download ──────────────────────────────────────────────────────────
+function copySkill(){
+  const text=document.getElementById('skill-preview').textContent;
+  navigator.clipboard.writeText(text).then(()=>{
+    const btn=document.getElementById('copy-skill-btn');
+    btn.textContent='Copied!';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='Copy';btn.classList.remove('copied');},2000);
+  });
+}
+
+function dlFile(name,content){
+  const a=document.createElement('a');
+  a.href='data:text/markdown;charset=utf-8,'+encodeURIComponent(content);
+  a.download=name;a.click();
+}
+
+function buildStyleRules(){
+  const sg=styleGuideRef();
+  const sn=sg.name;const ch=sg.ch;
+  return `# Style Rules Reference — ${state.productName}
+
+## Voice, Tone, and Timelessness
+
+- **Active Voice**: "Create the record" not "The record is created" (${sn}, ${ch} 1)
+- **${state.voice.includes('second')?'Second Person':'Third Person'}**: ${state.voice.includes('second')?'"Click **Save**" not "The user clicks Save"':'"The user clicks **Save**"'} (${sn}, ${ch} 1)
+- **No first-person plural**: Use "${state.companyName}" instead of "we" or "our" (${sn}, ${ch} 1)
+- **Timeless language**: Avoid "currently," "new," "now," "latest" — exception: release notes (${sn}, ${ch} 7)
+- **Plain English**: Simple over complex; "use" not "utilize" (${sn}, ${ch} 7)
+
+## Procedures
+
+- Imperative voice: "Click," "Enter," "Select"
+- Location before action: "In the **Settings** panel, click **Save**"
+- Goal before action: "To create a record, click **Create**"
+- Gerunds in headings: "Creating a Record" not "Create a Record"
+- Never "Editing" in headings — use "Modifying" or "Updating" (${sn}, ${ch} 5)
+- Expected results after each state-changing step (Save, Publish, Delete, Deploy, Create)
+
+Reference: ${sn}, ${ch} 6
+
+## Heading Capitalization
+
+Use **${state.headingCase}** for all headings. (${sn}, ${ch} 5)
+
+## Lists, Tables, and Paragraphs
+
+- **Lists**: Parallel structure; capitalize first letter; periods only for complete sentences
+- **Tables**: Introduce in a preceding paragraph; no punctuation in column headers
+- **Paragraphs**: 3–5 sentences max; one idea per paragraph
+
+## Numbers
+
+- Spell out zero through nine; numerals for 10 and above
+- Numerals for all measurements: "3 MB," "5 minutes"
+- Spell out numbers that begin a sentence
+- Percentages: "50%" (no space); four-digit numbers: "1,093"
+
+## Terminology
+
+- **Prohibited substitutions**: master/slave → primary/secondary; blacklist/whitelist → blocklist/allowlist
+- **Define on first use**: "MFE (micro-frontend)" then "MFE" thereafter
+- **Contractions**: Use sparingly; avoid in formal reference content; be consistent per doc
+`;
+}
+
+function buildSyntax(){
+  const admon=state.admonStyle==='Custom / define below'?(state.customAdmon||'[custom admonition syntax]'):state.admonStyle;
+  return `# Syntax Reference — ${state.productName}
+
+## Admonitions
+
+Only \`note\` and \`caution\` types are supported.
+
+\`\`\`
+${admon}
+\`\`\`
+
+## Cross-References
+
+\`\`\`markdown
+For more information, see [Topic Name](../topic-name).
+See [Feature Section](../feature-name#section-heading).
+\`\`\`
+
+Rules:
+- Use "see" (not "refer to")
+- Use "about" (not "on"): "information about indexes" not "information on indexes"
+- Never use "Click here" as link text
+- Avoid repeating the same cross-reference multiple times in one topic
+
+## Front Matter (${state.ssg})
+
+\`\`\`yaml
+---
+title: 'Page Title'
+service: 'User Guide'
+weight: 30
+---
+\`\`\`
+
+## New Page Template
+
+\`\`\`markdown
+Brief overview: what this feature does and why users need it.
+
+## Prerequisites
+
+- Prerequisite 1
+
+## [Primary Task Name]
+
+1. In the **[Location]**, click **[Action]**.
+2. Enter the required values.
+
+   Expected result: What the user should see after this step.
+
+3. Click **Save**.
+
+## Troubleshooting
+
+| Problem | Solution |
+| ------- | -------- |
+| Issue 1 | Fix 1    |
+
+## Related Topics
+
+- [Related Topic](../related-topic)
+\`\`\`
+`;
+}
+
+function downloadAll(){
+  collectAll();
+  setTimeout(()=>dlFile('SKILL.md',buildSkillMd()),0);
+  setTimeout(()=>dlFile('style-rules.md',buildStyleRules()),300);
+  setTimeout(()=>dlFile('syntax.md',buildSyntax()),600);
+}
+
+// ── Theme toggle ─────────────────────────────────────────────────────────────
+(function(){
+  const t=document.querySelector('[data-theme-toggle]');
+  const r=document.documentElement;
+  let d=matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light';
+  r.setAttribute('data-theme',d);
+  t&&t.addEventListener('click',()=>{
+    d=d==='dark'?'light':'dark';
+    r.setAttribute('data-theme',d);
+    t.setAttribute('aria-label','Switch to '+(d==='dark'?'light':'dark')+' mode');
+    t.innerHTML=d==='dark'
+      ?'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><path d="M12 1v2M12 21v2M4.22 4.22l1.42 1.42M18.36 18.36l1.42 1.42M1 12h2M21 12h2M4.22 19.78l1.42-1.42M18.36 5.64l1.42-1.42"/></svg>'
+      :'<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  });
+})();
+</script>
+</body>
+</html>
